@@ -14,6 +14,8 @@ html,body{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   // text-align: center;
-  
+  box-sizing: border-box;
+  // tab-var固定在顶部
+  padding-top: 46px;
 }
 </style>

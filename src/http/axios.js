@@ -1,12 +1,16 @@
 import axios from 'axios'
+import Vue from 'vue';
+import { Toast } from 'pagoda-mobile';
+Vue.use(Toast);
 
 // 基本配置
-let baseUrl = 'http://127.0.0.1:3000'
+let baseUrl = 'http://39.108.71.75:80'
 let timeout = 60000
 Object.assign(axios.defaults, {
   baseURL: baseUrl,
   timeout,
-  headers: { 'Content-Type': 'application/json;charset=UTF-8'}
+  headers: { 'Content-Type': 'application/json;charset=UTF-8'},
+  // withCredentials: true
 })
 
 // object对象存放每次new CancelToken生成的方法
@@ -20,6 +24,12 @@ axios.interceptors.request.use(config => {
   // do something
   // 查询状态提示...
   // 对请求参数做处理
+  if (config.hideLoading) {
+    Toast.loading({
+      message: '加载中...',
+      forbidClick: true
+    });
+  }
   return config
 }, function (error) {
   return Promise.reject(error)
@@ -29,13 +39,14 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
   // do something
   // 关闭查询状态
-  
+  Toast.clear();
   // 获取请求的api
   const request = JSON.stringify(response.config.url)
   // 请求完成后，将此请求从请求列表中移除
   requestList.splice(requestList.findIndex(el => el === request), 1)
   return response
 }, function (err) {
+  Toast.clear();
   // 报错信息没法获取config
   if (axios.isCancel(err)) {
     // 根据业务场景确定是否需要清空

@@ -23,69 +23,80 @@
           <pagoda-panel 
             title="" 
             desc="" 
-            status="状态"
-            v-for="(item,index) in list"
+            :status="formatStatus(item.reserve_status)"
+            v-for="(item,index) in bookList"
             :key="index"
           >
-            <pagoda-cell title="办公室" :value="item.room" />
-            <pagoda-cell title="预约日期" :value="item.date" />
-            <pagoda-cell title="预约时间" :value="item.time" />
-            <pagoda-cell title="备注信息" value="" />
+          <!-- bug： 没区域信息 -->
+            <pagoda-cell title="区域" :value="item.area_id" />
+            <pagoda-cell title="预约日期" :value="item.reserve_start" />
+            <pagoda-cell title="预约时间" :value="item.reserve_start" />
+            <pagoda-cell title="座位号" :value="item.seat_no" />
+            <pagoda-cell title="备注" :value="item.purpose" />
           </pagoda-panel>
         </div>
       </pagoda-list>
-      <div v-show="!list.length">暂无数据</div>
+      <!-- <div v-show="!bookList.length">暂无数据</div> -->
     </pagoda-pull-refresh>
   </div>
 </template>
 
 <script>
+import mixins from '@/global/mixins'
 export default {
   name: 'Record',
+  mixins: [mixins],
   data () {
     return {
-      list: [],
+      bookList: [],
       loading: false,
       finished: false,
       error: false,
-      refreshing: false
+      refreshing: false,
+      page_num: 1,
+			page_size: 10,
     }
   },
   methods: {
     onClickLeft () {
       this.$router.push({name: 'Home'})
     },
-    onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      this.loading = false;
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push({
-            room: `会议室1`,
-            date: `2020-05-02`,
-            time: `19:00-21:00`
-          });
+    async onLoad() {
+      if (this.refreshing) {
+          this.bookList = []
+          this.refreshing = false;
         }
-
+      try {
+        const res = await this.getData(this.$api.searchMyInfo, {
+          "user_id": this.user_id,
+          "page_num": this.page_num,
+          "page_size": this.page_size
+        })
+        this.bookList.push(...res.data.data)
         // 加载状态结束
         this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 20) {
-          this.finished = true;
+        if (!res.data.data.length) {
+          this.finished = true
+        } else {
+          this.page_num += 1
         }
-      }, 1000);
-      
+      } catch (error) {
+        console.log(error)
+      }
     },
     onRefresh() {
-      // 清空列表数据
-      // this.list.length = 0
+      this.page_num = 1
+      this.page_size = 10
       this.finished = false;
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;
       this.onLoad();
+    },
+    formatStatus (status) {
+      // 0-已预约，1-用户取消预约，2-系统取消预约，3-座位使用中'
+      const arr = ['已预约', '用户取消预约', '系统取消预约', '座位使用中']
+      return arr[status]
     }
   }
 }

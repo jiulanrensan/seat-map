@@ -3,6 +3,7 @@
     :title="title"
     @click-left="onClickLeft"
     @click-right="onClickRight"
+    fixed
   >
     <template #left>
       <pagoda-icon name="arrow-left" size="25" v-show="leftShow ==='home'">
@@ -54,8 +55,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+// dart-scss does not support /deep/,use '::v-deep'
+// https://github.com/vuejs/vue-cli/issues/3399
   .left-slot-text{
     font-size: 18px;
     vertical-align: top;
+  }
+  ::v-deep .pagoda-nav-bar__title{
+    font-size: 18px;
   }
 </style>

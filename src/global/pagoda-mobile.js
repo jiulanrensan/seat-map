@@ -2,7 +2,6 @@ import Vue from 'vue';
 
 import { Button } from 'pagoda-mobile';
 import { NavBar } from 'pagoda-mobile';
-import { Toast } from 'pagoda-mobile';
 import { Icon } from 'pagoda-mobile';
 import { List } from 'pagoda-mobile';
 // import { DetailList, DetailListItem } from 'pagoda-mobile';
@@ -16,7 +15,8 @@ import { PullRefresh } from 'pagoda-mobile';
 import { Dialog } from 'pagoda-mobile';
 import { Checkbox, CheckboxGroup } from 'pagoda-mobile';
 import { CountDown } from 'pagoda-mobile';
-
+import { Toast } from 'pagoda-mobile';
+Vue.use(Toast);
 Vue.use(CountDown);
 
 Vue.use(Checkbox);

@@ -1,5 +1,18 @@
 //postcss.config.js文件
 module.exports = {
+  devServer: {
+    port: 8080,
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: 'http://39.108.71.75:80/api',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+  },
   pluginOptions: {
     'postcss-px-to-viewport': {
       unitToConvert: 'px', //需要转换的单位，默认为"px"

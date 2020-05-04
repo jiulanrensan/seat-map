@@ -23,3 +23,4 @@ const apiUrl = {
     // post
     book: `/api/reserve_seat`
 }
+export default apiUrl

@@ -2,9 +2,20 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import './global/pagoda-mobile.js'
+import './global/pagoda-mobile'
+import apiUrl from './http/apiUrl'
 import http from '@/http/axios'
+import utils from '@/utils/utils'
+// 引入alloyFinger
+import AlloyFinger from 'alloyfinger'
+import AlloyFingerVue from 'alloyfinger/vue/alloy_finger_vue.js'
+Vue.use(AlloyFingerVue, { AlloyFinger:  AlloyFinger });
+
 Vue.prototype.$HTTP = http
+Vue.prototype.$api = apiUrl
+Vue.prototype.$utils = utils
+
+
 
 Vue.config.productionTip = false
 
