@@ -12,7 +12,7 @@ Object.assign(axios.defaults, {
   timeout,
   headers: { 
     'Content-Type': 'application/json;charset=UTF-8',
-    'token': localStorage.token
+    // 'token': localStorage.token
   },
   // withCredentials: true
 })
@@ -28,6 +28,11 @@ axios.interceptors.request.use(config => {
   // do something
   // 查询状态提示...
   // 对请求参数做处理
+  config.headers['token'] = localStorage.token
+  if (config.method=='post') {
+    Object.assign(config.data, {user_id: localStorage.userId})
+  }
+  
   if (!config.hideLoading) {
     Toast.loading({
       message: '加载中...',

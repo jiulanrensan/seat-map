@@ -16,7 +16,7 @@ export default {
 		}
 	},
 	created () {
-		this.user_id = localStorage.userId
+		// this.user_id = localStorage.userId
 	},
 	methods: {
 		// 请求方法

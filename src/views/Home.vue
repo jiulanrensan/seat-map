@@ -162,7 +162,9 @@ export default {
   },
   created () {
     this.initField()
-    this.getSeatMap()
+    setTimeout(() => {
+      this.getSeatMap()
+    }, 500);
   },
   computed: {
     submitable () {

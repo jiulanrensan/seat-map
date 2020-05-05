@@ -91,7 +91,7 @@ export default {
 		},
 		async getSeatDetail (seatId, reserveId) {
 			try {
-				const params = Object.assign({"user_id": this.user_id}, reserveId === undefined ? 
+				const params = Object.assign({"user_id": this.user_id}, reserveId === 'undefined' ? 
 				{"seat_id": Number(seatId)} : {"reserve_id": Number(reserveId)})
 				const res = await this.getData(this.$api.seatDetail, params)
 				const data = res.data.data
