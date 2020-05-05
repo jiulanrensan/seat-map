@@ -29,8 +29,8 @@
           >
           <!-- bug： 没区域信息 -->
             <pagoda-cell title="区域" :value="item.area_id" />
-            <pagoda-cell title="预约日期" :value="item.reserve_start" />
-            <pagoda-cell title="预约时间" :value="item.reserve_start" />
+            <pagoda-cell title="预约日期" :value="item.date" />
+            <pagoda-cell title="预约时间" :value="item.time" />
             <pagoda-cell title="座位号" :value="item.seat_no" />
             <pagoda-cell title="备注" :value="item.purpose" />
           </pagoda-panel>
@@ -71,6 +71,10 @@ export default {
           "user_id": this.user_id,
           "page_num": this.page_num,
           "page_size": this.page_size
+        })
+        res.data.data.forEach(el => {
+          el.date = el.reserve_start.split(' ')[0]
+          el.time = `${el.reserve_start.split(' ')[1]} - ${el.reserve_end.split(' ')[1]}`
         })
         this.bookList.push(...res.data.data)
         // 加载状态结束

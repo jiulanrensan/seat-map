@@ -97,14 +97,14 @@
     <pagoda-panel 
      title="座位已预约信息" 
      desc="" 
-     :status="`座位号：${selectedSeat}`"
+     :status="`座位号：${seatData[selectedSeat - 1] ? seatData[selectedSeat - 1].seat_no : ''}`"
      class="seatDetail">
       <pagoda-cell-group>
         <pagoda-cell
           v-for="(item, index) in detailList"
           clickable
           :key="index"
-          :title="`${item}`"
+          :title="`${item.reserve_start} - ${item.reserve_end}`"
         >
         </pagoda-cell>
       </pagoda-cell-group>
@@ -182,7 +182,7 @@ export default {
       this.errorMessage = start >= end ? '结束时间不能小于起始时间' : ''
     },
     selectedSeat (val) {
-      this.detailList = this.getSeatDetail(val)
+      this.getSeatDetail(val)
     }
   },
   methods: {
@@ -228,11 +228,13 @@ export default {
         // 接口只能查当天的座位详情
         const res = await this.getData(this.$api.seatDetail, {
           "user_id": this.user_id,
-          "seat_id": val
+          "seat_id": val,
+          "reserve_date": this.fieldDateValue
         })
-        return res.data.data.reservations_all
+        this.detailList = res.data.data.reservations_all
+        // console.log(this.detailList)
       } catch (error) {
-        return []
+        console.log(error)
       }
     },
     setMinHour () {
@@ -277,7 +279,7 @@ export default {
     onClickLeft () {
       // 扫码接口
       // 暂时跳转到座位详情页
-      // this.$router.push({name: 'SeatDetail'})
+      this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
     },
     showRule () {
       this.$dialog.alert({
@@ -304,8 +306,10 @@ export default {
         if (res.data.code === 0) {
           this.$toast.success('提交成功！');
           setTimeout(() => {
-            this.$router.push({path: `seat-detail/${this.selectedSeat}`})
+            this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
           }, 1000);
+        } else {
+          this.$toast.fail(`提交失败！${res.data.message}`);
         }
       } catch (error) {
         console.log(error)
