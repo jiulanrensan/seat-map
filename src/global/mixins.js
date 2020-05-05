@@ -11,9 +11,12 @@ export default {
 				{id: 2, area_name: '义利室'},
 				{id: 3, area_name: '前台办公区域'}
 			],
-			reserveStatus: ['已预约', '用户取消预约', '系统取消预约', '座位使用中'],
+			reserveStatus: ['已预约', '用户取消预约', '系统取消预约', '座位使用中', '结束使用', '完成使用'],
 			user_id: 1
 		}
+	},
+	created () {
+		console.log(this.$store.state.user_id)
 	},
 	methods: {
 		// 请求方法

@@ -98,9 +98,7 @@ export default {
       this.onLoad();
     },
     formatStatus (status) {
-      // 0-已预约，1-用户取消预约，2-系统取消预约，3-座位使用中'
-      const arr = ['已预约', '用户取消预约', '系统取消预约', '座位使用中']
-      return arr[status]
+      return this.reserveStatus[status]
     }
   }
 }
@@ -112,6 +110,8 @@ export default {
   overflow-y: auto;
   background-color: #fafafa;
   text-align: left;
+  // padding-top: 46px;
+  box-sizing: border-box;
   .panel{
     padding: 10px 0;
   }

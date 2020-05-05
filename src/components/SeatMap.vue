@@ -6,7 +6,7 @@
       <div>可预约</div>
       <div>已预约</div>
       <div>已选择</div>
-      <div>使用中</div>
+      <!-- <div>使用中</div> -->
     </div>
     <div class="map" :style="{'pointer-events': clickable ? '' : 'none'}">
       <div v-for="(item,index) in seatData" :key="index">

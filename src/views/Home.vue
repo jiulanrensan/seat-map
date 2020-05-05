@@ -104,7 +104,9 @@
           v-for="(item, index) in detailList"
           clickable
           :key="index"
-          :title="`${item.reserve_start} - ${item.reserve_end}`"
+          :title="item.reserve_start.split(' ')[0]"
+          :label="`${item.reserve_start.split(' ')[1]} - ${item.reserve_end.split(' ')[1]}`"
+          :value="item.user_name"
         >
         </pagoda-cell>
       </pagoda-cell-group>
@@ -310,6 +312,10 @@ export default {
           }, 1000);
         } else {
           this.$toast.fail(`提交失败！${res.data.message}`);
+          // 重新请求数据
+          setTimeout(() => {
+            this.getSeatMap()
+          }, 1000);
         }
       } catch (error) {
         console.log(error)

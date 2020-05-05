@@ -4,7 +4,8 @@ import { Toast } from 'pagoda-mobile';
 Vue.use(Toast);
 
 // 基本配置
-let baseUrl = 'http://39.108.71.75:80'
+// let baseUrl = 'http://39.108.71.75:80'
+let baseUrl = location.origin
 let timeout = 60000
 Object.assign(axios.defaults, {
   baseURL: baseUrl,
@@ -24,7 +25,7 @@ axios.interceptors.request.use(config => {
   // do something
   // 查询状态提示...
   // 对请求参数做处理
-  if (config.hideLoading) {
+  if (!config.hideLoading) {
     Toast.loading({
       message: '加载中...',
       forbidClick: true

@@ -63,12 +63,13 @@ export default {
 			seatTime: [],
 			cellClickable: false,
 			currentInfo: {},
-			time: 60 * 60 * 1000
+			time: 0
 		}
 	},
 	created () {
 		console.log(this.$route.params)
-		this.getSeatDetail(this.$route.params.seatId)
+		const {seatId, reserveId} = this.$route.params
+		this.getSeatDetail(seatId, reserveId)
 	},
 	methods: {
 		setCownDownTitle (status) {
@@ -88,22 +89,11 @@ export default {
 		onClickLeft () {
       this.$router.push({name: 'Home'})
 		},
-		toggle (index) {
-			if (this.cellClickable) {
-				this.$refs.checkboxes[index].toggle();
-			}
-		},
-		showPopup (type) {
-			// type: show,select
-			this.showTime = true
-			this.cellClickable = type === 'select'
-		},
-		async getSeatDetail (seatId) {
+		async getSeatDetail (seatId, reserveId) {
 			try {
-				const res = await this.getData(this.$api.seatDetail, {
-					"user_id": this.user_id,
-					"seat_id": Number(seatId)
-				})
+				const params = Object.assign({"user_id": this.user_id}, reserveId === undefined ? 
+				{"seat_id": Number(seatId)} : {"reserve_id": Number(reserveId)})
+				const res = await this.getData(this.$api.seatDetail, params)
 				const data = res.data.data
 				const detail = data.current_reservation ? data.current_reservation : {
 					"id": '',
