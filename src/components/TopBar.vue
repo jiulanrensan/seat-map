@@ -5,7 +5,7 @@
     @click-right="onClickRight"
     fixed
   >
-    <template #left>
+    <template #left v-show="leftShow">
       <pagoda-icon name="arrow-left" size="25" v-show="leftShow ==='home'">
         <span class="left-slot-text">主页</span>
       </pagoda-icon>

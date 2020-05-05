@@ -16,6 +16,28 @@ const utils = {
 		month = month < 10 ? '0' + month : month
 		day = day < 10 ? '0' + day : day
 		return `${time.getFullYear()}${sep}${month}${sep}${day}`
+	},
+	splitUniqueWords: function (searchStr, words = 'ticket') {
+		if (!searchStr) {
+			return {
+			searchStr: '',
+			words: ''
+			}
+		}
+		const arr = searchStr.slice(1).split('&')
+		const newArr = []
+		let uniqueWords = ''
+		arr.forEach(item => {
+			if (item.indexOf(words) === 0) {
+			uniqueWords = item
+			} else {
+			newArr.push(item)
+			}
+		})
+		return {
+			searchStr: newArr.join('&'),
+			words: uniqueWords
+		}
 	}
 }
 

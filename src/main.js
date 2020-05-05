@@ -45,6 +45,7 @@ requireComponent.keys().forEach(fileName => {
 const VConsole = require('vconsole');
 new VConsole();
 
+
 new Vue({
   router,
   store,

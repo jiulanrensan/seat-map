@@ -21,6 +21,10 @@ const apiUrl = {
 
     // 预定座位
     // post
-    book: `/api/reserve_seat`
+    book: `/api/reserve_seat`,
+
+    // 登录
+    // post
+    login: `/api/login`
 }
 export default apiUrl

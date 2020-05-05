@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <topBar 
-      leftShow="scan"
+      leftShow=""
       :onClickRight="onClickRight"
       :onClickLeft="onClickLeft">
     </topBar>
@@ -216,7 +216,7 @@ export default {
           // "date_from": "2020-05-01 10:00:00",
           // "date_to": "2020-05-01 11:30:00"
           "date_from": `${this.fieldDateValue} ${this.fieldStartTimeValue}:00`,
-          "date_to": `${this.fieldDateValue} ${this.fieldEndTimeValue}:00`
+          "date_to": `${this.fieldDateValue} ${this.fieldEndTimeValue > 24 ? 24 : this.fieldEndTimeValue}:00`
         })
         this.seatData = res.data.data
       } catch (error) {

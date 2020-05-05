@@ -16,7 +16,7 @@ export default {
 		}
 	},
 	created () {
-		console.log(this.$store.state.user_id)
+		this.user_id = localStorage.userId
 	},
 	methods: {
 		// 请求方法
@@ -31,5 +31,8 @@ export default {
 					})
 			})
 		}
+	},
+	watch: {
+
 	}
 }

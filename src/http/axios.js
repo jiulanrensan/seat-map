@@ -10,7 +10,10 @@ let timeout = 60000
 Object.assign(axios.defaults, {
   baseURL: baseUrl,
   timeout,
-  headers: { 'Content-Type': 'application/json;charset=UTF-8'},
+  headers: { 
+    'Content-Type': 'application/json;charset=UTF-8',
+    'token': localStorage.token
+  },
   // withCredentials: true
 })
 
