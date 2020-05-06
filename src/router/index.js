@@ -21,7 +21,7 @@ Vue.use(VueRouter)
   },
   {
     // 座位详情
-    path: '/seat-detail/:seatId/:reserveId',
+    path: '/seat-detail',
     name: 'SeatDetail',
     component: () => import(/* webpackChunkName: "about" */ '../views/Detail.vue')
   }

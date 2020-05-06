@@ -283,7 +283,8 @@ export default {
     onClickLeft () {
       // 扫码接口
       // 暂时跳转到座位详情页
-      this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
+      // this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
+      this.$router.push({name: 'SeatDetail', query: {seat_id: this.selectedSeat}})
     },
     showRule () {
       this.$dialog.alert({
@@ -310,7 +311,8 @@ export default {
         if (res.data.code === 0) {
           this.$toast.success('提交成功！');
           setTimeout(() => {
-            this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
+            // this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
+            this.$router.push({name: 'SeatDetail', query: {seat_id: this.selectedSeat}})
           }, 1000);
         } else {
           this.$toast.fail(`提交失败！${res.data.message}`);

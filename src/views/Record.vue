@@ -28,7 +28,7 @@
             :key="index"
           >
           <!-- bug： 没区域信息 -->
-            <pagoda-cell title="区域" :value="item.area_id" />
+            <pagoda-cell title="区域" :value="areaList[item.area_id - 1].area_name" />
             <pagoda-cell title="预约日期" :value="item.date" />
             <pagoda-cell title="预约时间" :value="item.time" />
             <pagoda-cell title="座位号" :value="item.seat_no" />

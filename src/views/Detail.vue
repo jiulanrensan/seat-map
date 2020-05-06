@@ -63,13 +63,16 @@ export default {
 			seatTime: [],
 			cellClickable: false,
 			currentInfo: {},
-			time: 0
+			time: 0,
+			seatId: '',
+			reserveId: ''
 		}
 	},
 	created () {
-		console.log(this.$route.params)
-		const {seatId, reserveId} = this.$route.params
-		this.getSeatDetail(seatId, reserveId)
+		console.log(this.$route.query)
+		this.seatId = this.$route.query.seat_id
+		this.reserveId = this.$route.query.reserve_id
+		this.getSeatDetail(this.seatId, this.reserveId)
 	},
 	methods: {
 		setCownDownTitle (status) {
@@ -91,10 +94,16 @@ export default {
 		},
 		async getSeatDetail (seatId, reserveId) {
 			try {
-				const params = Object.assign({"user_id": this.user_id}, reserveId === 'undefined' ? 
+				const params = Object.assign({"user_id": this.user_id}, !reserveId ? 
 				{"seat_id": Number(seatId)} : {"reserve_id": Number(reserveId)})
+				// const params = {
+				// 	"user_id": this.user_id,
+				// 	"seat_id": Number(seatId),
+				// 	"reserve_id": Number(reserveId)
+				// }
 				const res = await this.getData(this.$api.seatDetail, params)
 				const data = res.data.data
+				console.log(data)
 				const detail = data.current_reservation ? data.current_reservation : {
 					"id": '',
 					"purpose": '',
@@ -121,7 +130,7 @@ export default {
 				if (res.data.code === 0) {
 					this.$toast.success('提交成功！');
 					// 确认之后刷新本页
-					this.getSeatDetail(this.$route.params.seatId)
+					this.getSeatDetail(this.seatId)
 				} else {
 					this.$toast.fail('提交失败！请重新提交');
 				}
