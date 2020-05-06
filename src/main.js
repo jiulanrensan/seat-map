@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
           localStorage.setItem('token', token)
           localStorage.setItem('userId', user_id)
           console.log(location)
-          if (localStorage.redirect.includes('seat-detail') && !to.path.includes('seat-detail')) {
+          if (localStorage.redirect && localStorage.redirect.includes('seat-detail') && !to.path.includes('seat-detail')) {
             const path = localStorage.redirect
             localStorage.redirect = ''
             next(`${path}`)
@@ -80,7 +80,6 @@ router.beforeEach((to, from, next) => {
         console.log(error)
       }
     } else {
-      to.path
       if (ticket) {
         authUser()
       } else {
@@ -92,7 +91,7 @@ router.beforeEach((to, from, next) => {
 function authUser () {
   let query = `?${ticket}`
   query += `&format=json&service=${currentUrl}`
-  nAxios.get(`http://cas.kt3.pagoda.com.cn/p3/serviceValidate${query}`)
+  nAxios.get(`http://cas.pagoda.com.cn/p3/serviceValidate${query}`)
     .then(res => {
       console.log(res)
       if (res.data.serviceResponse) {
@@ -111,7 +110,8 @@ function loginUser () {
   if (location.hash.includes('seat-detail')) localStorage.setItem('redirect', location.hash.slice(1))
   // 进行单点登录
   setTimeout(() => {
-    window.location.replace(`http://cas.kt3.pagoda.com.cn/cas2/login?service=${currentUrl}`)
+    // cas.kt3.
+    window.location.replace(`https://cas.pagoda.com.cn/cas2/login?service=${currentUrl}`)
   }, 200)
 }
 

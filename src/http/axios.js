@@ -30,7 +30,7 @@ axios.interceptors.request.use(config => {
   // 对请求参数做处理
   config.headers['token'] = localStorage.token
   if (config.method=='post') {
-    Object.assign(config.data, {user_id: localStorage.userId})
+    Object.assign(config.data, {user_id: Number(localStorage.userId)})
   }
   
   if (!config.hideLoading) {

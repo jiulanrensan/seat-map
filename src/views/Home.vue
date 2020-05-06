@@ -341,6 +341,7 @@ export default {
   // $normalBgColor: #F5F5F5;
   .home{
     height: 100vh;
+    padding-top: 46px;
     overflow-y: auto;
     background-color: #fafafa;
     position: relative;

@@ -107,6 +107,7 @@ export default {
 <style lang="scss" scoped>
 .record{
   height:100vh;
+  padding-top: 46px;
   overflow-y: auto;
   background-color: #fafafa;
   text-align: left;

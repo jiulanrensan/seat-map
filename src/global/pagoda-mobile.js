@@ -16,6 +16,9 @@ import { Dialog } from 'pagoda-mobile';
 import { Checkbox, CheckboxGroup } from 'pagoda-mobile';
 import { CountDown } from 'pagoda-mobile';
 import { Toast } from 'pagoda-mobile';
+import { ResultPage } from 'pagoda-mobile';
+
+Vue.use(ResultPage);
 Vue.use(Toast);
 Vue.use(CountDown);
 

@@ -10,6 +10,7 @@
 		<pagoda-panel 
 			title="" 
 			desc="" 
+			v-if="currentInfo.id"
 			:status="`${currentInfo.reserve_status !== '' ? reserveStatus[currentInfo.reserve_status] : '暂无数据'}`"
 		>
 		<!-- 状态： 已预约，待使用，可预约，使用中, 已使用 -->
@@ -20,13 +21,23 @@
 			<pagoda-cell title="座位号" :value="currentInfo.seat_no" />
 			<pagoda-cell title="备注" :value="currentInfo.purpose" />
 		</pagoda-panel>
+		<div v-else>
+			<!-- <div style="text-align: center">{{$route.query.seat_id}}</div> -->
+			<!-- 您未预约当前座位，请返回主页预约座位 -->
+			<pagoda-result-page
+				img-url="//manhattan.didistatic.com/static/manhattan/mand-mobile/result-page/2.1/lost.png"
+				text="您未预约当前座位，请返回主页预约座位"
+			>
+			</pagoda-result-page>
+		</div>
+		
 
 		<!-- 待使用，使用中显示倒计时 -->
 		<div class="countdown" v-if="currentInfo.reserve_status === 0 || currentInfo.reserve_status === 3">
 			<!-- currentInfo.reserve_status === 0 ? 使用时间还剩 -->
-			<div class="title">{{setCownDownTitle(currentInfo.reserve_status)}}</div>
+			<div class="title">{{setCownDownTitle(currentInfo.reserve_start)}}</div>
 			<div class="time">
-				<pagoda-count-down :time="setCownDownTime(currentInfo.reserve_status)" />
+				<pagoda-count-down :time="setCownDownTime(currentInfo.reserve_status)" @finish="finish" />
 			</div>
 		</div>
 
@@ -40,7 +51,7 @@
 			<!-- <pagoda-button type="primary" block square>查看可预约时间</pagoda-button> -->
 			<template v-if="currentInfo.reserve_status === 0">
 				<!-- 待使用 -->
-				<pagoda-button type="primary" block square @click="handleUse">使用</pagoda-button>
+				<pagoda-button type="primary" block square @click="handleUse" v-show="showUseBtn()">使用</pagoda-button>
 				<pagoda-button type="danger" block square @click="handleCancel(1)">取消预约</pagoda-button>
 			</template>
 			<template v-if="currentInfo.reserve_status === 3">
@@ -75,8 +86,11 @@ export default {
 		this.getSeatDetail(this.seatId, this.reserveId)
 	},
 	methods: {
-		setCownDownTitle (status) {
-			return status === 3 ? `使用时间还剩` : `距离可使用还有`
+		showUseBtn (){
+			return +new Date(this.currentInfo.reserve_start) - +new Date() < 0
+		},
+		setCownDownTitle (start) {
+			return +new Date(start) <= +new Date() ? `使用时间还剩` : `距离可使用还有`
 		},
 		setCownDownTime () {
 			// 返回当前时间距离指定时间的毫秒数
@@ -85,7 +99,7 @@ export default {
 			const {reserve_start: start, reserve_end: end} = this.currentInfo
 			const time = +new Date(start) - +new Date()
 			console.log(time)
-			return time > 0 ? 
+			return time >= 0 ? 
 				time :
 				+new Date(end) - +new Date()
 		},
@@ -94,13 +108,13 @@ export default {
 		},
 		async getSeatDetail (seatId, reserveId) {
 			try {
-				const params = Object.assign({"user_id": this.user_id}, !reserveId ? 
-				{"seat_id": Number(seatId)} : {"reserve_id": Number(reserveId)})
-				// const params = {
-				// 	"user_id": this.user_id,
-				// 	"seat_id": Number(seatId),
-				// 	"reserve_id": Number(reserveId)
-				// }
+				// const params = Object.assign({"user_id": this.user_id}, !reserveId ? 
+				// {"seat_id": Number(seatId)} : {"reserve_id": Number(reserveId)})
+				const params = {
+					"user_id": this.user_id,
+					"seat_id": Number(seatId),
+					"reserve_id": Number(reserveId)
+				}
 				const res = await this.getData(this.$api.seatDetail, params)
 				const data = res.data.data
 				console.log(data)
@@ -125,7 +139,8 @@ export default {
 			try {
 				const res = await this.getData(this.$api.confirm, {
 					"user_id": this.user_id,
-					"reserve_id": this.currentInfo.id
+					"seat_id": Number(this.seatId),
+					"reserve_id": Number(this.reserveId)
 				})
 				if (res.data.code === 0) {
 					this.$toast.success('提交成功！');
@@ -133,9 +148,13 @@ export default {
 					this.getSeatDetail(this.seatId)
 				} else {
 					this.$toast.fail('提交失败！请重新提交');
+					setTimeout(() => {
+						this.getSeatDetail(this.seatId)
+					}, 500);
 				}
 			} catch (error) {
 				console.log(error)
+				// this.getSeatDetail(this.seatId)
 			}
 		},
 		// 和handleUse类似，可以合并成一个函数
@@ -152,10 +171,17 @@ export default {
 					this.$router.push({name: 'Home'})
 				} else {
 					this.$toast.fail('提交失败！请重新提交');
+					setTimeout(() => {
+						this.getSeatDetail(this.seatId)
+					}, 500);
 				}
 			} catch (error) {
 				console.log(error)
+				// this.getSeatDetail(this.seatId)
 			}
+		},
+		finish () {
+			this.getSeatDetail(this.seatId)
 		}
 	}
 }
@@ -163,6 +189,7 @@ export default {
 <style lang="scss" scoped>
 .detail{
 	height:100vh;
+	padding-top: 46px;
   overflow-y: auto;
   background-color: #fafafa;
 	position: relative;
