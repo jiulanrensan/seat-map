@@ -28,7 +28,7 @@
             :key="index"
           >
           <!-- bug： 没区域信息 -->
-            <pagoda-cell title="区域" :value="areaList[item.area_id - 1].area_name" />
+            <pagoda-cell title="区域" :value="item.area_name" />
             <pagoda-cell title="预约日期" :value="item.date" />
             <pagoda-cell title="预约时间" :value="item.time" />
             <pagoda-cell title="座位号" :value="item.seat_no" />
@@ -58,6 +58,12 @@ export default {
     }
   },
   methods: {
+    findArea (id) {
+      const idx = this.areaList.findIndex(el => el.area_id === id)
+      console.log(this.areaList)
+      console.log(idx)
+      return idx
+    },
     onClickLeft () {
       this.$router.push({name: 'Home'})
     },
@@ -67,6 +73,7 @@ export default {
           this.refreshing = false;
         }
       try {
+        // debugger
         const res = await this.getData(this.$api.searchMyInfo, {
           "user_id": this.user_id,
           "page_num": this.page_num,

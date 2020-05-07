@@ -86,22 +86,30 @@ export default {
 		this.getSeatDetail(this.seatId, this.reserveId)
 	},
 	methods: {
+		formatTime(time) {
+			// let target = time.replace(/ /g,"T")
+			// target+= 'Z'
+			let target = time.replace(/-/g, "/")
+			return new Date(target).getTime()
+		},
 		showUseBtn (){
-			return +new Date(this.currentInfo.reserve_start) - +new Date() < 0
+			return this.formatTime(this.currentInfo.reserve_start) - new Date().getTime() < 0
 		},
 		setCownDownTitle (start) {
-			return +new Date(start) <= +new Date() ? `使用时间还剩` : `距离可使用还有`
+			return this.formatTime(start) <= new Date().getTime() ? `使用时间还剩` : `距离可使用还有`
 		},
 		setCownDownTime () {
 			// 返回当前时间距离指定时间的毫秒数
 			// 距离开始使用、距离结束使用
 			// 状态为已预约且当前时间已过开始使用时间，targetTime应为结束时间
 			const {reserve_start: start, reserve_end: end} = this.currentInfo
-			const time = +new Date(start) - +new Date()
-			console.log(time)
+			const time = this.formatTime(start) - new Date().getTime()
+			// console.log(start)
+			// console.log(this.formatTime(start))
+			// console.log(time)
 			return time >= 0 ? 
 				time :
-				+new Date(end) - +new Date()
+				this.formatTime(end) - new Date().getTime()
 		},
 		onClickLeft () {
       this.$router.push({name: 'Home'})
@@ -167,8 +175,11 @@ export default {
 				})
 				if (res.data.code === 0) {
 					this.$toast.success('提交成功！');
+					setTimeout(() => {
+						this.getSeatDetail(this.seatId)
+					}, 500);
 					// 确认之后返回主页
-					this.$router.push({name: 'Home'})
+					// this.$router.push({name: 'Home'})
 				} else {
 					this.$toast.fail('提交失败！请重新提交');
 					setTimeout(() => {

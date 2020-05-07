@@ -61,15 +61,26 @@
         />
         <!-- min_hours有bug -->
         <pagoda-datetime-picker
-          v-show="showStartTimePicker || showEndTimePicker"
-          v-model="currentTime"
+          v-show="showStartTimePicker"
+          v-model="currentStartTime"
           type="time"
-          :min-hour="setMinHour()"
+          :min-hour="0"
           :max-hour="24"
           :min-minute="0"
           :max-minute="59"
           @confirm="onConfirm"
-          @cancel="handleCancelPicker('showTimePicker')"
+          @cancel="handleCancelPicker('showStartTimePicker')"
+        />
+        <pagoda-datetime-picker
+          v-show="showEndTimePicker"
+          v-model="currentEndTime"
+          type="time"
+          :min-hour="0"
+          :max-hour="24"
+          :min-minute="0"
+          :max-minute="59"
+          @confirm="onConfirm"
+          @cancel="handleCancelPicker('showEndTimePicker')"
         />
         <pagoda-picker
           v-show="showRoomPicker"
@@ -118,7 +129,6 @@
         type="primary"
         square 
         block
-        :disabled="!submitable"
         @click="handleSubmit"
       >
         提交预约
@@ -149,7 +159,8 @@ export default {
       minDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
       maxDate: this.$utils.getSpecialDate(7),
       currentDate: '',
-      currentTime: '',
+      currentStartTime: '',
+      currentEndTime: '',
       cuurentRoom: '',
       errorMessage: '',
       areaNameList: [],
@@ -161,14 +172,14 @@ export default {
     }
   },
   created () {
-    this.initField()
-    setTimeout(() => {
-      this.getSeatMap()
-    }, 500);
+    this.getAreaList()
+    // setTimeout(() => {
+      
+    // }, 200);
   },
   computed: {
     submitable () {
-      return this.errorMessage === '' && this.seatData[this.selectedSeat - 1] && this.seatData[this.selectedSeat - 1].current_seat_status === 'RESERVABLE'
+      return this.errorMessage === '' && this.seatData[this.findSeat(this.selectedSeat)] && this.seatData[this.findSeat(this.selectedSeat)].current_seat_status === 'RESERVABLE'
     }
   },
   watch: {
@@ -190,6 +201,7 @@ export default {
     }
   },
   methods: {
+    
     initField () {
       // 初始化数据
       // 日期
@@ -197,10 +209,13 @@ export default {
 
       // 开始，结束时间
       let hours = new Date().getHours()
-      this.fieldStartTimeValue = `${hours < 10 ? `0${hours}` : hours}:00`
+      let minutes = new Date().getMinutes() + 1
+      this.fieldStartTimeValue = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`
       this.fieldEndTimeValue = `${hours+2 < 10 ? `0${hours+2}` : hours+2}:00`
-
+      this.currentStartTime = this.fieldStartTimeValue
+      this.currentEndTime = this.fieldEndTimeValue
       // 办公区域
+      
       this.fieldRoomValue = '宏愿室'
 
       // 初始化办公区域列表
@@ -241,10 +256,35 @@ export default {
         console.log(error)
       }
     },
+    // 获取区域列表
+    async getAreaList() {
+      try {
+        const res = await this.getData(this.$api.areaList)
+        this.areaList = res.data.data
+        this.initField()
+        this.getSeatMap()
+      } catch (error) {
+        console.log(error)
+      }
+    },
     setMinHour () {
-      return new Date(this.fieldDateValue).getDate() > new Date().getDate() ? 
-        0 :
-        new Date().getHours()
+      // 今天之后
+      if (new Date(this.fieldDateValue).getDate() > new Date().getDate()){
+        return 0
+      } else if (this.showStartTimePicker || this.showEndTimePicker) {
+        // 开始时间
+        return new Date().getHours()
+      }
+    },
+    setMinMinute () {
+      if (new Date(this.fieldDateValue).getDate() > new Date().getDate()){
+        return 0
+      } else if (this.showStartTimePicker) {
+        // 开始时间
+        return new Date().getMinutes() + 1
+      } else if (this.showEndTimePicker) {
+        return 0
+      }
     },
     onConfirm(val) {
       console.log(val)
@@ -312,7 +352,8 @@ export default {
           this.$toast.success('提交成功！');
           setTimeout(() => {
             // this.$router.push({path: `seat-detail/${this.selectedSeat}/undefined`})
-            this.$router.push({name: 'SeatDetail', query: {seat_id: this.selectedSeat}})
+            console.log(res.data)
+            this.$router.push({name: 'SeatDetail', query: {seat_id: this.selectedSeat, reserve_id: res.data.data.reserve_id}})
           }, 1000);
         } else {
           this.$toast.fail(`提交失败！${res.data.message}`);

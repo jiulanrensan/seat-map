@@ -25,6 +25,9 @@ const apiUrl = {
 
     // 登录
     // post
-    login: `/api/login`
+    login: `/api/login`,
+
+    // 区域列表
+    areaList: `api/area/list`
 }
 export default apiUrl

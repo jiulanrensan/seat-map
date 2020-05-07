@@ -7,9 +7,9 @@ export default {
 	data () {
 		return {
 			areaList: [
-				{id: 1, area_name: '宏愿室'},
-				{id: 2, area_name: '义利室'},
-				{id: 3, area_name: '前台办公区域'}
+				// {id: 1, area_name: '宏愿室'},
+				// {id: 2, area_name: '义利室'},
+				// {id: 3, area_name: '前台办公区域'}
 			],
 			reserveStatus: ['已预约', '用户取消预约', '系统取消预约', '座位使用中', '结束使用', '完成使用'],
 			user_id: 1
@@ -30,7 +30,13 @@ export default {
 						reject(err)
 					})
 			})
-		}
+		},
+		findSeat(seatId) {
+      const idx = this.areaList.findIndex(el => el.seat_id === seatId)
+      console.log(idx)
+      console.log(this.seatData[idx])
+      return idx
+    },
 	},
 	watch: {
 
