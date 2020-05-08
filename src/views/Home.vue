@@ -209,9 +209,14 @@ export default {
 
       // 开始，结束时间
       let hours = new Date().getHours()
+      // let hours = new Date('2020-05-08 23:00:00').getHours()
+      // let endHours = Number(hours) + 2 > 25 ? 24 : hours + 2
       let minutes = new Date().getMinutes() + 1
-      this.fieldStartTimeValue = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`
-      this.fieldEndTimeValue = `${hours+2 < 10 ? `0${hours+2}` : hours+2}:00`
+      hours = this._formmatNumber(hours)
+      // endHours = this._formmatNumber(endHours)
+      minutes = this._formmatNumber(minutes)
+      this.fieldStartTimeValue = `${hours}:${minutes}`
+      this.fieldEndTimeValue = Number(hours) + 2 > 24 ? `23:59` : `${Number(hours) + 2}:00`
       this.currentStartTime = this.fieldStartTimeValue
       this.currentEndTime = this.fieldEndTimeValue
       // 办公区域
@@ -220,6 +225,10 @@ export default {
 
       // 初始化办公区域列表
       this.areaNameList = this.areaList.map(el => {return el.area_name})
+    },
+    _formmatNumber (n) {
+      n = n.toString()
+      return n[1] ? n : '0' + n
     },
     // 请求座位数据，初始化座位图
     async getSeatMap () {
